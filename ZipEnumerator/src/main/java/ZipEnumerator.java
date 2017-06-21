@@ -1,3 +1,5 @@
+import com.sun.tools.example.debug.tty.AmbiguousMethodException;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -36,6 +38,14 @@ public class ZipEnumerator {
             names.add(e.getFileName().toString());
         }
         return names;
+    }
+    //add files to zip
+    public void addFilebyPath(Path p, ?){
+
+    }
+    //throw ambiguousFileNameException if string name is not unique
+    public void addFilebyName(String name) throws AmbiguousMethodException{
+
     }
 
 }
