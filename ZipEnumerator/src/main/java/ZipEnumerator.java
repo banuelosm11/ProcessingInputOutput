@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 public class ZipEnumerator {
     Path directory;
     List<Path> entries;
+    List<String> names;
 
     public ZipEnumerator(String path) {
         this.directory = Paths.get(path);
@@ -33,19 +35,56 @@ public class ZipEnumerator {
     }
 
     public List<String> listNamesOfZipFiles() {
-        List<String> names = new ArrayList<>();
+        names = new ArrayList<>();
         for (Path e : entries) {
             names.add(e.getFileName().toString());
         }
         return names;
     }
-    //add files to zip
-    public void addFilebyPath(Path p, ?){
+
+    public void addFilebyPath(Path pathOfZip, Path fileToAdd) throws IOException{
+
+        for(Path e: entries){
+            if(e == pathOfZip){
+                FileSystem zipWithAddedFile = FileSystems.newFileSystem(pathOfZip, null);
+                Files.copy(fileToAdd, zipWithAddedFile.getPath("/"));
+            }
+        }
 
     }
-    //throw ambiguousFileNameException if string name is not unique
-    public void addFilebyName(String name) throws AmbiguousMethodException{
 
+    public void addFilebyPath(Path pathOfZip, Path fileToAdd, Path whereToInsert) throws IOException {
+
+        for (Path e : entries) {
+            if (e == pathOfZip) {
+
+                FileSystem zipWithAddedFile = FileSystems.newFileSystem(pathOfZip, null);
+                Files.copy(fileToAdd, zipWithAddedFile.getPath("/").resolve(whereToInsert));
+
+            }
+        }
+    }
+
+    //throw ambiguousFileNameException if string name is not unique
+    public void addFilebyName(String nameOfZip, Path fileToAdd) throws AmbiguousMethodException, IOException{
+
+        for(String s: names){
+            if(s == nameOfZip){
+                FileSystem zipWithAddedFile = FileSystems.newFileSystem(Paths.get(nameOfZip), null);
+                Files.copy(fileToAdd, zipWithAddedFile.getPath("/"));
+            }
+        }
+
+    }
+
+    public void addFilebyName(String nameOfZip, Path fileToAdd, Path whereToInsert) throws AmbiguousMethodException, IOException{
+
+        for(String s: names){
+            if(s == nameOfZip){
+                FileSystem zipWithAddedFile = FileSystems.newFileSystem(Paths.get(nameOfZip), null);
+                Files.copy(fileToAdd, zipWithAddedFile.getPath("/").resolve(whereToInsert));
+            }
+        }
     }
 
 }
